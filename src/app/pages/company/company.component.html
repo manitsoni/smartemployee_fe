@@ -1,0 +1,46 @@
+<nz-breadcrumb>
+    <nz-breadcrumb-item>
+        <i nz-icon nzType="home"></i>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>
+        <a>
+            <span>Home</span>
+        </a>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>Manage Company</nz-breadcrumb-item>
+</nz-breadcrumb>
+<br>
+<button nz-button [nzType]="'primary'" (click)="openModel()" class="gutter-row"><span>Add Company</span></button>
+<br>
+<nz-table #basicTable [nzData]="companyList">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Company</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let data of basicTable.data;let i = index">
+            <td>{{i + 1}}</td>
+            <td>{{data.CompanyName}}</td>
+            <td>
+                <button nz-button [nzType]="'primary'" (click)="patchRecords(data.CompanyID)">Edit</button> | 
+                <button nz-button [nzType]="'danger'" (click)="deleteRecord(data.CompanyID)">Delete</button>
+            </td>
+        </tr>
+    </tbody>
+</nz-table>
+
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Add Company" (nzOnCancel)="openModel()" (nzOnOk)="saveCompany()">
+    <ng-container *nzModalContent>
+        <form [formGroup]="companyForm">
+            <nz-form-control [nzErrorTip]="nameError">
+                <input nz-input placeholder="Enter Company Name" formControlName="companyName" />
+                <span class="error" *ngIf="(companyFormControl.companyName.touched) && companyFormControl.companyName.errors?.required">
+                    Company name is required
+                </span>
+            </nz-form-control>
+        </form>
+    </ng-container>
+</nz-modal>

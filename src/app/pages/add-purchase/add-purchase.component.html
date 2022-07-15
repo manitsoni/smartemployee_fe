@@ -1,0 +1,111 @@
+<nz-breadcrumb>
+    <nz-breadcrumb-item>
+        <i nz-icon nzType="home"></i>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>
+        <a>
+            <span>Home</span>
+        </a>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>Add Purchase</nz-breadcrumb-item>
+</nz-breadcrumb>
+<br>
+<button nz-button [nzType]="'primary'" (click)="openModel()" class="gutter-row"><span>Add Vendor</span></button>
+<br>
+<form nz-form [formGroup]="purchaseForm" (ngSubmit)="addPurchase()">
+    <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="purchaseDate" nzRequired>Purchase Date</nz-form-label>
+        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please input Purchase Date!">
+            <nz-date-picker formControlName="purchaseDate"></nz-date-picker>
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="toBillAmt" nzRequired>Vendor</nz-form-label>
+        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please select vendor">
+            <nz-select style="width: 100%;" id="Vendor" nzShowSearch nzAllowClear nzPlaceHolder="Select a vendor"
+                formControlName="vendorID">
+                <span *ngFor="let data of vendorList;let i=index;">
+                    <nz-option [nzValue]="data.VendorID" [nzLabel]="data.VendorName"></nz-option>
+                </span>
+            </nz-select>
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="toBillAmt" nzRequired>Type</nz-form-label>
+        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please select type">
+            <nz-select style="width: 100%;" id="Type" nzShowSearch nzAllowClear nzPlaceHolder="Select a type"
+                formControlName="type">
+                <span *ngFor="let data of typeList;let i=index;">
+                    <nz-option [nzValue]="data" [nzLabel]="data"></nz-option>
+                </span>
+            </nz-select>
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="toBillAmt" nzRequired>To Bill Amount</nz-form-label>
+        <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="exchangeRateError">
+            <input nz-input id="website" formControlName="toBillAmt" placeholder="To Bill Amount" />
+        </nz-form-control>
+        <ng-template #exchangeRateError let-control>
+            <ng-container *ngIf="control.hasError('pattern')">Invalid Bill Amount
+            </ng-container>
+            <ng-container *ngIf="control.hasError('required')">Please input To Bill Amount!
+            </ng-container>
+        </ng-template>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="toBillAmt" nzRequired>Files</nz-form-label>
+        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please Upload Files!">
+            <input nz-input type="file" (change)="fileChange($event)" #fileInput multiple="true" />
+            <span class="error" *ngIf="purchaseForm.controls.toBillAmt.touched && selectedFiles.length === 0">
+                Please upload file
+            </span>
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item nz-row class="register-area">
+        <nz-form-control [nzSpan]="14" [nzOffset]="6">
+            <button nz-button nzType="primary">Add Purchase</button>
+        </nz-form-control>
+    </nz-form-item>
+</form>
+
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Vendor" (nzOnCancel)="openModel()" (nzOnOk)="saveVendor()">
+    <ng-container *nzModalContent>
+        <form [formGroup]="vendorForm">
+            <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 15, lg: 15 }">
+                <div class="gutter-row" nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nzXl="12">
+                    <nz-form-control>
+                        <input nz-input placeholder="Enter Vendor Name" formControlName="vendorName" />
+                        <span class="error"
+                            *ngIf="(vendorFormControl.vendorName.touched) && vendorFormControl.vendorName.errors?.required">
+                            Vendor is required
+                        </span>
+                    </nz-form-control>
+                </div>
+                <div class="gutter-row" nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nzXl="12">
+                    <nz-form-control [nzErrorTip]="nameError">
+                        <input nz-input placeholder="Enter Place" formControlName="place" />
+                        <span class="error"
+                            *ngIf="(vendorFormControl.place.touched) && vendorFormControl.place.errors?.required">
+                            Place is required
+                        </span>
+                    </nz-form-control>
+                </div>
+                <div class="gutter-row" nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nzXl="12">
+                    <nz-form-control [nzErrorTip]="nameError">
+                        <input nz-input placeholder="Enter Mobile Number (+91)" formControlName="mobileNo" />
+                        <span class="error"
+                            *ngIf="(vendorFormControl.mobileNo.touched) && vendorFormControl.mobileNo.errors?.required">
+                            Mobile number is required
+                        </span>
+                        <span class="error"
+                            *ngIf="(vendorFormControl.mobileNo.touched) && vendorFormControl.mobileNo.errors?.pattern">
+                            Invalid mobile number
+                        </span>
+                    </nz-form-control>
+                </div>
+            </div>
+        </form>
+    </ng-container>
+</nz-modal>

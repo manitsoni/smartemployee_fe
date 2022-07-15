@@ -1,0 +1,133 @@
+<!-- <nz-layout class="app-layout">
+  <nz-sider class="menu-sidebar" nzCollapsible nzWidth="256px" nzBreakpoint="md" [(nzCollapsed)]="isCollapsed"
+    [nzTrigger]="null">
+    <div class="sidebar-logo">
+      <a href="https://ng.ant.design/" target="_blank">
+        <img src="https://ng.ant.design/assets/img/logo.svg" alt="logo">
+        <h1>Smart Employee</h1>
+      </a>
+    </div>
+
+    <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+      <ul *ngIf="isLogin && isSuperAdmin">
+        <li nz-menu-item nzMatchRouter>
+          <a routerLink="/purchase" nzIcon="form">Purchase Dashboard</a>
+        </li>
+        <li nz-menu-item nzMatchRouter>
+          <a routerLink="/company" nzIcon="form">Manage company</a>
+        </li>
+        <li nz-menu-item nzMatchRouter>
+          <a routerLink="/user" nzIcon="form">Manage user</a>
+        </li>
+        <li nz-menu-item nzMatchRouter>
+          <a routerLink="/vendor" nzIcon="form">Manage vendor</a>
+        </li>
+      </ul>
+      <ul *ngIf="isLogin && !isSuperAdmin">
+        <li nz-menu-item nzMatchRouter>
+          <a routerLink="/purchase" nzIcon="form">Purchase Dashboard</a>
+        </li>
+        <li nz-menu-item nzMatchRouter>
+          <a routerLink="/add-purchase" nzIcon="form">Add Purchase</a>
+        </li>
+      </ul>
+      <ul *ngIf="!isLogin">
+        <li nz-menu-item nzMatchRouter>
+          <a routerLink="/login" nzIcon="form">Login</a>
+        </li>
+      </ul>
+      <ul *ngIf="isLogin">
+        <li nz-menu-item nzMatchRouter>
+          <a (click)="logout()" nzIcon="form">Logout</a>
+        </li>
+      </ul>
+    </ul>
+  </nz-sider>
+  <nz-layout>
+    <nz-header>
+      <div class="app-header">
+        <span class="header-trigger" (click)="isCollapsed = !isCollapsed">
+          <i class="trigger" nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"></i>
+        </span>
+      </div>
+    </nz-header>
+    <nz-content>
+      <div class="inner-content">
+        <router-outlet></router-outlet>
+      </div>
+    </nz-content>
+  </nz-layout>
+</nz-layout> -->
+
+<nz-layout class="layout">
+  <nz-sider nzCollapsible nzBreakpoint="lg" [nzCollapsedWidth]="0">
+    <div class="logo" routerLink="purchase">Smart Employee</div>
+    <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+      <ul *ngIf="isLogin && isSuperAdmin">
+        <li nz-menu-item nzMatchRouter>
+          <a routerLink="/purchase" nzIcon="form">Purchase Dashboard</a>
+        </li>
+        <li nz-menu-item nzMatchRouter>
+          <a routerLink="/company" nzIcon="form">Manage company</a>
+        </li>
+        <li nz-menu-item nzMatchRouter>
+          <a routerLink="/user" nzIcon="form">Manage user</a>
+        </li>
+        <li nz-menu-item nzMatchRouter>
+          <a routerLink="/vendor" nzIcon="form">Manage vendor</a>
+        </li>
+      </ul>
+      <ul *ngIf="isLogin && !isSuperAdmin">
+        <li nz-menu-item nzMatchRouter>
+          <a routerLink="/purchase" nzIcon="form">Purchase Dashboard</a>
+        </li>
+        <li nz-menu-item nzMatchRouter>
+          <a routerLink="/add-purchase" nzIcon="form">Add Purchase</a>
+        </li>
+      </ul>
+      <ul *ngIf="!isLogin">
+        <li nz-menu-item nzMatchRouter>
+          <a routerLink="/login" nzIcon="form">Login</a>
+        </li>
+      </ul>
+      <ul *ngIf="isLogin">
+        <li nz-menu-item nzMatchRouter>
+          <a (click)="logout()" nzIcon="form">Logout</a>
+        </li>
+      </ul>
+      <ul>
+        <li nz-menu-item nzMatchRouter>
+          <a (click)="loadModalPwa()" nzIcon="form">Install To App</a>
+        </li>
+      </ul>
+    </ul>
+  </nz-sider>
+  <nz-layout>
+    <nz-header></nz-header>
+    <nz-content>
+      <div class="inner-content">
+        <router-outlet></router-outlet>
+      </div>
+    </nz-content>
+    <nz-footer>Ant Design ©2020 Implement By Angular</nz-footer>
+  </nz-layout>
+</nz-layout>
+<div class="w-100 position-absolute bottom-0" *ngIf="modalPwaPlatform === 'ANDROID' || modalPwaPlatform === 'IOS'">
+  <div class="alert alert-secondary m-2">
+    <button type="button" class="btn-close position-absolute top-0 end-0 m-1" aria-label="Close"
+      (click)="closePwa()"></button>
+    <!-- Android -->
+    <div *ngIf="modalPwaPlatform === 'ANDROID'" (click)="addToHomeScreen()">
+      Add this WEB app to home screen
+    </div>
+    <!-- iOS with Safari -->
+    <div *ngIf="modalPwaPlatform === 'IOS'">
+      To install this WEB app on your device, tap the "Menu" button
+      <img
+        src="https://res.cloudinary.com/rodrigokamada/image/upload/v1641089482/Blog/angular-pwa/safari_action_button_38x50.png"
+        class="ios-menu m-0" />
+      and then "Add to home screen" button
+      <i class="bi bi-plus-square"></i>
+    </div>
+  </div>
+</div>

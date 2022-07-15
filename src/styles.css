@@ -1,0 +1,29 @@
+/* You can add global styles to this file, and also import other style files */
+.gutter-row{
+    margin-bottom: 15px !important;
+}
+.ant-menu-dark.ant-menu-dark:not(.ant-menu-horizontal) .ant-menu-item-selected{
+    background-color: rgb(14, 103, 126) !important;
+}
+.ant-btn-primary{
+    background-color: rgb(14, 103, 126) !important;
+    border-color: rgb(14, 103, 126) !important;
+    cursor: pointer !important;
+}
+.error{
+    color: #ff4d4f;
+    font-size: 14px;
+    /* font-weight: bold; */
+}
+/* ::ng-deep .ant-layout-header{
+    display: flex;
+    justify-content: stretch;
+    right: 0;
+    position: absolute;
+    left: 550px;
+    background: transparent;
+    align-items: unset;
+} */
+::ng-deep .ant-table-content {
+    overflow: auto !important;
+}

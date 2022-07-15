@@ -1,0 +1,73 @@
+<nz-breadcrumb>
+    <nz-breadcrumb-item>
+        <i nz-icon nzType="home"></i>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>
+        <a>
+            <span>Home</span>
+        </a>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>Manage Vendor</nz-breadcrumb-item>
+</nz-breadcrumb>
+<br>
+<button nz-button [nzType]="'primary'" (click)="openModel()" class="gutter-row"><span>Add Vendor</span></button>
+<br>
+<nz-table #basicTable [nzData]="vendorList">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Vendor name</th>
+            <th>Place</th>
+            <th>Mobile number</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let data of basicTable.data;let i = index">
+            <td>{{i + 1}}</td>
+            <td>{{data.VendorName}}</td>
+            <td>{{data.Place}}</td>
+            <td>{{data.MobileNo}}</td>
+            <td>
+                <button nz-button [nzType]="'primary'" (click)="patchRecords(data.VendorID)">Edit</button> |
+                <button nz-button [nzType]="'danger'" (click)="deleteRecord(data.VendorID)">Delete</button>
+            </td>
+        </tr>
+    </tbody>
+</nz-table>
+
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Vendor" (nzOnCancel)="openModel()" (nzOnOk)="saveVendor()">
+    <ng-container *nzModalContent>
+        <form [formGroup]="vendorForm">
+            <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 15, lg: 15 }">
+                <div class="gutter-row" nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nzXl="12">
+                    <nz-form-control>
+                        <input nz-input placeholder="Enter Vendor Name" formControlName="vendorName" />
+                        <span class="error" *ngIf="(vendorFormControl.vendorName.touched) && vendorFormControl.vendorName.errors?.required">
+                            Vendor is required
+                        </span>
+                    </nz-form-control>
+                </div>
+                <div class="gutter-row" nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nzXl="12">
+                    <nz-form-control [nzErrorTip]="nameError">
+                        <input nz-input placeholder="Enter Place" formControlName="place" />
+                        <span class="error" *ngIf="(vendorFormControl.place.touched) && vendorFormControl.place.errors?.required">
+                            Place is required
+                        </span>
+                    </nz-form-control>
+                </div>
+                <div class="gutter-row" nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nzXl="12">
+                    <nz-form-control [nzErrorTip]="nameError">
+                        <input nz-input placeholder="Enter Mobile Number (+91)" formControlName="mobileNo" />
+                        <span class="error" *ngIf="(vendorFormControl.mobileNo.touched) && vendorFormControl.mobileNo.errors?.required">
+                            Mobile number is required
+                        </span>
+                        <span class="error" *ngIf="(vendorFormControl.mobileNo.touched) && vendorFormControl.mobileNo.errors?.pattern">
+                           Invalid mobile number
+                        </span>
+                    </nz-form-control>
+                </div>
+            </div>
+        </form>
+    </ng-container>
+</nz-modal>

@@ -1,0 +1,3 @@
+::ng-deep .ant-table-content {
+    overflow: auto !important;
+}

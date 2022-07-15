@@ -1,0 +1,92 @@
+<nz-breadcrumb>
+    <nz-breadcrumb-item>
+        <i nz-icon nzType="home"></i>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>
+        <a>
+            <span>Home</span>
+        </a>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>Manage User</nz-breadcrumb-item>
+</nz-breadcrumb>
+<br>
+<div style="display: flex;">
+    <button nz-button [nzType]="'primary'" (click)="openModel()" class="gutter-row"><span>Add user</span></button>
+
+    <input nz-input placeholder="Search user" [(ngModel)]="searchValue" (keydown)="searchUser()" autocomplete="off"
+        style="margin-left: 15px;margin-bottom:15px;width:350px" />
+</div>
+
+<nz-table #basicTable [nzData]="userList">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>User name</th>
+            <th>Company name</th>
+            <th>Password</th>
+            <th>Is Multi user</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let data of basicTable.data;let i = index">
+            <td>{{i + 1}}</td>
+            <td>{{data.UserName}}</td>
+            <td>{{data.CompanyName}}</td>
+            <td>{{data.Password}}</td>
+            <td>{{data.IsMultiUser}}</td>
+            <td>
+                <button nz-button [nzType]="'primary'" (click)="patchRecords(data.UserID)">Edit</button> |
+                <button nz-button [nzType]="'danger'" (click)="deleteRecord(data.UserID)">Delete</button>
+            </td>
+        </tr>
+    </tbody>
+</nz-table>
+
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Add User" (nzOnCancel)="openModel()" (nzOnOk)="saveUser()">
+    <ng-container *nzModalContent>
+        <form [formGroup]="user">
+            <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 15, lg: 15 }">
+                <div class="gutter-row" nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nzXl="12">
+                    <nz-form-control>
+                        <input nz-input placeholder="Enter User Name" formControlName="userName" autocomplete="off" />
+                        <span class="error"
+                            *ngIf="(userFormControl.userName.touched) && userFormControl.userName.errors?.required">
+                            User name is required
+                        </span>
+                    </nz-form-control>
+                </div>
+                <div class="gutter-row" nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nzXl="12">
+                    <nz-form-control>
+                        <nz-select style="width: 100%;" id="Company" nzShowSearch nzAllowClear nzPlaceHolder="Select a company"
+                            formControlName="companyId">
+                            <span *ngFor="let data of companyList;let i=index;">
+                                <nz-option [nzValue]="data.CompanyID" [nzLabel]="data.CompanyName"></nz-option>
+                            </span>
+                        </nz-select>
+                        <span class="error"
+                            *ngIf="(userFormControl.companyId.touched) && userFormControl.companyId.errors?.required">
+                            Please select company
+                        </span>
+                    </nz-form-control>
+                </div>
+                <div class="gutter-row" nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nzXl="12">
+                    <nz-form-control>
+                        <input type="text" nz-input placeholder="Enter Password" formControlName="password"
+                            autocomplete="off" />
+                        <span class="error"
+                            *ngIf="(userFormControl.password.touched) && userFormControl.password.errors?.required">
+                            Password is required
+                        </span>
+                    </nz-form-control>
+                </div>
+                <div class="gutter-row" nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="12" nzXl="12">
+                    <nz-form-control>
+                        Is Multi User : <nz-switch formControlName="isMultiUser"></nz-switch>
+                    </nz-form-control>
+                </div>
+            </div>
+
+        </form>
+    </ng-container>
+</nz-modal>

@@ -1,0 +1,52 @@
+<nz-breadcrumb>
+    <nz-breadcrumb-item>
+        <i nz-icon nzType="home"></i>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>
+        <a>
+            <span>Home</span>
+        </a>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>Dashboard</nz-breadcrumb-item>
+</nz-breadcrumb>
+<br>
+<div style="display: flex;">
+    <button *ngIf="!isSuperAdmin" nz-button [nzType]="'primary'" routerLink="/add-purchase" class="gutter-row"><span>Add
+            purchase</span></button>
+
+    <input nz-input placeholder="Search user" [(ngModel)]="searchValue" (keydown)="searchPurchase()" autocomplete="off"
+        style="margin-left: 15px;margin-bottom:15px;width:350px" />
+    <!-- <nz-range-picker [(ngModel)]="fromPurchaseDate" (ngModelChange)="searchByDate($event)"></nz-range-picker> -->
+
+</div>
+
+<br>
+<nz-table #basicTable [nzData]="purchaseList" [nzPageSize]="5" nzHideOnSinglePage="true">
+    <thead>
+        <tr>
+            <!-- <th>#</th> -->
+            <th>Purchase Date</th>
+            <th>Amount</th>
+            <th>Type</th>
+            <th>Company Name</th>
+            <th>User Name</th>
+            <th>Vendor Name</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let data of basicTable.data;let i = index">
+            <!-- <td>{{data.PurchaseMainID}}</td> -->
+            <td>{{data.PurchaseDateClone}}</td>
+            <td>{{data.ToBillAmt}}</td>
+            <td>{{data.Type}}</td>
+            <td>{{data.CompanyName}}</td>
+            <td>{{data.UserName}}</td>
+            <td>{{data.VendorName}}</td>
+            <td>
+                <button nz-button [nzType]="'primary'" (click)="downloadFile(data.PurchaseMainID)">Download</button> |
+                <button nz-button [nzType]="'danger'">Delete</button>
+            </td>
+        </tr>
+    </tbody>
+</nz-table>

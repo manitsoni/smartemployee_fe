@@ -1,0 +1,30 @@
+<nz-breadcrumb>
+    <nz-breadcrumb-item>
+        <i nz-icon nzType="home"></i>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>
+        <a>
+            <span>Home</span>
+        </a>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>Login</nz-breadcrumb-item>
+</nz-breadcrumb>
+<br>
+
+<form nz-form [formGroup]="loginForm" class="login-form" (ngSubmit)="userLogin()">
+    <nz-form-item>
+        <nz-form-control nzErrorTip="Please enter username">
+            <nz-input-group nzPrefixIcon="user">
+                <input type="text" nz-input formControlName="userName" placeholder="Username" />
+            </nz-input-group>
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-control nzErrorTip="Please enter password">
+            <nz-input-group nzPrefixIcon="lock">
+                <input type="password" nz-input formControlName="password" placeholder="Password" />
+            </nz-input-group>
+        </nz-form-control>
+    </nz-form-item>
+    <button nz-button class="login-form-button login-form-margin" [nzType]="'primary'">Log in</button>
+</form>

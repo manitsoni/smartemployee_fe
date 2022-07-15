@@ -1,0 +1,22 @@
+.header-search{
+    margin-top: 12px;
+    padding: 18px;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: row;
+    -moz-box-orient: horizontal;
+    -moz-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: column;
+    -webkit-flex-wrap: nowrap;
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+    display: flex;
+    justify-content: space-between;
+}
+::ng-deep .ant-picker-input > input{
+    width: 186px;
+}
+::ng-deep .ant-table-content {
+    overflow: auto !important;
+}
