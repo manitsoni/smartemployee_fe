@@ -14,7 +14,7 @@ export class CommonService {
     showMessage(type: string,message): void {
         this.message.create(type,message);
     }
-    environmentUrl = "http://localhost:16940/api/"
+    environmentUrl = "http://202.89.76.154:1418/api/"
     API_POST(URL: string, data: any) : Observable<any>{
         const httpOptions = {
             headers: new HttpHeaders({

@@ -12,7 +12,7 @@
 <br>
 <button nz-button [nzType]="'primary'" (click)="openModel()" class="gutter-row"><span>Add Vendor</span></button>
 <br>
-<nz-table #basicTable [nzData]="vendorList">
+<nz-table #basicTable [nzData]="vendorList" [nzPageSize]="5" nzHideOnSinglePage="true">
     <thead>
         <tr>
             <th>#</th>

@@ -17,7 +17,7 @@
         style="margin-left: 15px;margin-bottom:15px;width:350px" />
 </div>
 
-<nz-table #basicTable [nzData]="userList">
+<nz-table #basicTable [nzData]="userList" [nzPageSize]="5" nzHideOnSinglePage="true">
     <thead>
         <tr>
             <th>#</th>

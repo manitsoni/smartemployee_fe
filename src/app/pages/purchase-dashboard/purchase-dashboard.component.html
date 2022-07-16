@@ -14,7 +14,7 @@
     <button *ngIf="!isSuperAdmin" nz-button [nzType]="'primary'" routerLink="/add-purchase" class="gutter-row"><span>Add
             purchase</span></button>
 
-    <input nz-input placeholder="Search user" [(ngModel)]="searchValue" (keydown)="searchPurchase()" autocomplete="off"
+    <input nz-input placeholder="Search purchase" [(ngModel)]="searchValue" (keydown)="searchPurchase()" autocomplete="off"
         style="margin-left: 15px;margin-bottom:15px;width:350px" />
     <!-- <nz-range-picker [(ngModel)]="fromPurchaseDate" (ngModelChange)="searchByDate($event)"></nz-range-picker> -->
 
