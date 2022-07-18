@@ -15,6 +15,7 @@ export class CommonService {
         this.message.create(type,message);
     }
     environmentUrl = "http://202.89.76.154:1418/api/"
+    azureUrl ="https://smartemployee20220718194837.azurewebsites.net/api/"
     API_POST(URL: string, data: any) : Observable<any>{
         const httpOptions = {
             headers: new HttpHeaders({
@@ -24,7 +25,7 @@ export class CommonService {
 
         return this._http
             .post<any>(
-                `${this.environmentUrl}${URL}`,
+                `${this.azureUrl}${URL}`,
                 data
             )
             .pipe(
@@ -39,7 +40,7 @@ export class CommonService {
     API_GET(URL: string) : Observable<any> {
         return this._http
             .get<any>(
-                `${this.environmentUrl}${URL}`
+                `${this.azureUrl}${URL}`
             )
             .pipe(
                 map(data => {
@@ -54,7 +55,7 @@ export class CommonService {
         
         return this._http
           .post<any>(
-            `${this.environmentUrl}${Url}`,
+            `${this.azureUrl}${Url}`,
             data    
           )
           .pipe(
@@ -76,7 +77,7 @@ export class CommonService {
     }
     API_FILE_DOWNLOAD(URL, configurations, Options?): Observable<any> {
         var responseType = "blob";
-        let path = `${this.environmentUrl}${URL}`;
+        let path = `${this.azureUrl}${URL}`;
         return this._http
           .post<Blob>(
             path,
