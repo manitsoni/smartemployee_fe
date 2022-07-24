@@ -57,7 +57,7 @@
     <nz-empty *ngIf="purchaseList.length === 0"></nz-empty>
     <div *ngFor="let data of purchaseList;let i = index">
         <nz-card [nzPageSize]="5" style="width:100%;" [nzTitle]="data.PurchaseDateClone"
-            [nzActions]="[image, upload, download,delete]">
+            [nzActions]="[image, upload, download,delete,view]">
             <p>Amount : {{data.ToBillAmt}}</p>
             <p>Type : {{data.Type}}</p>
             <p>Purchase By : {{data.UserName}}</p>
@@ -74,7 +74,7 @@
         <ng-template #download>
             <i nz-icon nz-tooltip nzTooltipTitle="Download" nzType="vertical-align-bottom" nzTheme="outline"></i>
         </ng-template>
-        <ng-template>
+        <ng-template #view>
             <i nz-icon nz-tooltip nzTooltipTitle="More Info" nzType="info" nzTheme="outline"
                 (click)="openShowMore(data.PurchaseMainID)"></i>
         </ng-template>
