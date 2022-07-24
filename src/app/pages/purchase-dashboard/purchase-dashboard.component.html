@@ -12,7 +12,9 @@
 <br>
 <div style="display: flex;">
     <button *ngIf="!isSuperAdmin" nz-button [nzType]="'primary'" routerLink="/add-purchase" class="gutter-row"><span>Add
-            purchase</span></button>
+            purchase</span></button> &nbsp;&nbsp;&nbsp;
+    <button nz-button [nzType]="'primary'" (click)="refresh()" class="gutter-row"><span>
+            Refresh</span></button>
 
     <input nz-input placeholder="Search purchase" [(ngModel)]="searchValue" (keydown)="searchPurchase()"
         autocomplete="off" style="margin-left: 15px;margin-bottom:15px;width:350px" />
@@ -75,8 +77,7 @@
             <i nz-icon nz-tooltip nzTooltipTitle="Download" nzType="vertical-align-bottom" nzTheme="outline"></i>
         </ng-template>
         <ng-template #view>
-            <i nz-icon nzType="info" nzTheme="outline"
-                (click)="openShowMore(data.PurchaseMainID)"></i>
+            <i nz-icon nzType="info" nzTheme="outline" (click)="openShowMore(data.PurchaseMainID)"></i>
         </ng-template>
         <ng-template #delete>
             <i nz-icon nz-tooltip nzTooltipTitle="Delete" nzType="delete" nzTheme="outline"></i>
@@ -94,7 +95,8 @@
         </nz-form-item>
     </ng-container>
 </nz-modal>
-<nz-modal [(nzVisible)]="isMoreVisible" nzTitle="Purchase Details" (nzOnCancel)="openShowMore('')" (nzOnOk)="openShowMore('')">
+<nz-modal [(nzVisible)]="isMoreVisible" nzTitle="Purchase Details" (nzOnCancel)="openShowMore('')"
+    (nzOnOk)="openShowMore('')">
     <ng-container *nzModalContent>
         <p>Purchase Date : {{popupDetails.PurchaseDateClone}}</p>
         <p>Amount : {{popupDetails.ToBillAmt}}</p>

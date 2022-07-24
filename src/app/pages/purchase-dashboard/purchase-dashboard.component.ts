@@ -42,6 +42,13 @@ export class PurchaseDashboardComponent implements OnInit {
     this.getUserList();
     this.userId = localStorage.getItem("userId");
   }
+  refresh(){
+    this.service.isLoader = true;
+    this.getCompanyList();
+    this.getVendorList();
+    this.getUserList();
+    this.userId = localStorage.getItem("userId");
+  }
   openView(purchaseId) {
     this.service.isLoader = true;
     var url = "PurchaseMain/GetFiles/" + purchaseId
