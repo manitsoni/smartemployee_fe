@@ -192,7 +192,7 @@ export class PurchaseDashboardComponent implements OnInit {
       let id = this.currentUpload;
       let url = "https://smartemployee20220718194837.azurewebsites.net/api/PurchaseMain/UploadFiles/" + id;
       this.service.isLoader = true;
-      this.http.post(url, formData).subscribe(async (res: any) => {
+      this.http.post(url, formData).subscribe((res: any) => {
         console.log(res)
         if (typeof (res) === 'object') {
           this.service.showMessage('success', 'File Uploaded Successfully!')

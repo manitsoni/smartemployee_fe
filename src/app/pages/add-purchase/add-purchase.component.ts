@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -16,10 +17,10 @@ export class AddPurchaseComponent implements OnInit {
   isExists = false;
   isValidation = false;
   vendorForm: FormGroup;
-  selectedFiles: Array<File> = [];  
+  selectedFiles: Array<File> = [];
   typeList: string[] = ["Cash", "Credit"];
 
-  constructor(private fb: FormBuilder, private service: CommonService, private route: Router) { }
+  constructor(private fb: FormBuilder, private service: CommonService, private route: Router, private http: HttpClient) { }
 
   ngOnInit(): void {
     this.getVendorList();
@@ -82,17 +83,35 @@ export class AddPurchaseComponent implements OnInit {
             formData.append("postedFiles", this.selectedFiles[i]);
           }
           let id = res.lstPurchaseMain[0].purchaseMainID;
-          let url = "PurchaseMain/UploadFiles/" + id;
-          this.service.API_POST(url, formData).subscribe(res => {
-            if (res.isSuccess) {
+          // let url = "PurchaseMain/UploadFiles/" + id;
+          // this.service.API_POST(url, formData).subscribe(res => {
+          //   if (res.isSuccess) {
+          //     this.service.showMessage('success', 'Purchase Added Successfully!')
+          //     this.purchaseForm.reset();
+          //     this.selectedFiles = [];
+          //     this.service.isLoader = false;
+          //     this.route.navigateByUrl("/purchase")
+          //   }
+          // },(error =>{
+          //   if(error.status === 200){
+          //     this.service.showMessage('success', 'Purchase Added Successfully!')
+          //     this.purchaseForm.reset();
+          //     this.selectedFiles = [];
+          //     this.service.isLoader = false;
+          //     this.route.navigateByUrl("/purchase")
+          //   }
+          // }))
+          let url = "https://smartemployee20220718194837.azurewebsites.net/api/PurchaseMain/UploadFiles/" + id;
+          this.http.post(url, formData).subscribe((res: any) => {
+            if (typeof (res) === 'object') {
               this.service.showMessage('success', 'Purchase Added Successfully!')
               this.purchaseForm.reset();
               this.selectedFiles = [];
               this.service.isLoader = false;
               this.route.navigateByUrl("/purchase")
             }
-          },(error =>{
-            if(error.status === 200){
+          }, (error => {
+            if (error.status === 200) {
               this.service.showMessage('success', 'Purchase Added Successfully!')
               this.purchaseForm.reset();
               this.selectedFiles = [];
