@@ -5,7 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NZ_I18N } from 'ng-zorro-antd/i18n';
 import { en_US } from 'ng-zorro-antd/i18n';
-import { registerLocaleData } from '@angular/common';
+import { HashLocationStrategy, LocationStrategy, registerLocaleData } from '@angular/common';
 import en from '@angular/common/locales/en';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
@@ -17,7 +17,7 @@ import { NzMessageModule } from 'ng-zorro-antd/message';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
-
+import { NzSpinModule } from 'ng-zorro-antd/spin';
 registerLocaleData(en);
 
 @NgModule({
@@ -35,12 +35,13 @@ registerLocaleData(en);
     NzMenuModule,
     NzMessageModule,
     NzBreadCrumbModule,
+    NzSpinModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production,
       registrationStrategy: 'registerWhenStable:30000'
     })
   ],
-  providers: [{ provide: NZ_I18N, useValue: en_US }],
+  providers: [{ provide: NZ_I18N, useValue: en_US }, { provide: LocationStrategy, useClass: HashLocationStrategy }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

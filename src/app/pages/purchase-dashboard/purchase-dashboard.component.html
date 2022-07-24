@@ -14,14 +14,14 @@
     <button *ngIf="!isSuperAdmin" nz-button [nzType]="'primary'" routerLink="/add-purchase" class="gutter-row"><span>Add
             purchase</span></button>
 
-    <input nz-input placeholder="Search purchase" [(ngModel)]="searchValue" (keydown)="searchPurchase()" autocomplete="off"
-        style="margin-left: 15px;margin-bottom:15px;width:350px" />
+    <input nz-input placeholder="Search purchase" [(ngModel)]="searchValue" (keydown)="searchPurchase()"
+        autocomplete="off" style="margin-left: 15px;margin-bottom:15px;width:350px" />
     <!-- <nz-range-picker [(ngModel)]="fromPurchaseDate" (ngModelChange)="searchByDate($event)"></nz-range-picker> -->
 
 </div>
 
 <br>
-<nz-table #basicTable [nzData]="purchaseList" [nzPageSize]="5" nzHideOnSinglePage="true">
+<nz-table #basicTable [nzData]="purchaseList" [nzPageSize]="5" nzHideOnSinglePage="true" *ngIf="!isMobile">
     <thead>
         <tr>
             <!-- <th>#</th> -->
@@ -44,9 +44,63 @@
             <td>{{data.UserName}}</td>
             <td>{{data.VendorName}}</td>
             <td>
+                <button nz-button [nzType]="'primary'" (click)="openView(data.PurchaseMainID)">View</button> |
+                <button nz-button [nzType]="'primary'" (click)="openMore(data.PurchaseMainID)">Upload</button> |
                 <button nz-button [nzType]="'primary'" (click)="downloadFile(data.PurchaseMainID)">Download</button> |
+                <button nz-button [nzType]="'primary'" (click)="openShowMore(data.PurchaseMainID)">Details</button> |
                 <button nz-button [nzType]="'danger'">Delete</button>
             </td>
         </tr>
     </tbody>
 </nz-table>
+<div *ngIf="isMobile">
+    <nz-empty *ngIf="purchaseList.length === 0"></nz-empty>
+    <div *ngFor="let data of purchaseList;let i = index">
+        <nz-card [nzPageSize]="5" style="width:100%;" [nzTitle]="data.PurchaseDateClone"
+            [nzActions]="[image, upload, download,delete]">
+            <p>Amount : {{data.ToBillAmt}}</p>
+            <p>Type : {{data.Type}}</p>
+            <p>Purchase By : {{data.UserName}}</p>
+        </nz-card>
+        <br>
+        <ng-template #image>
+            <i nz-icon nz-tooltip nzTooltipTitle="View" nzType="file-image" nzTheme="outline"
+                (click)="openView(data.PurchaseMainID)"></i>
+        </ng-template>
+        <ng-template #upload>
+            <i nz-icon nz-tooltip nzTooltipTitle="Upload" nzType="vertical-align-top" nzTheme="outline"
+                (click)="openMore(data.PurchaseMainID)"></i>
+        </ng-template>
+        <ng-template #download>
+            <i nz-icon nz-tooltip nzTooltipTitle="Download" nzType="vertical-align-bottom" nzTheme="outline"></i>
+        </ng-template>
+        <ng-template>
+            <i nz-icon nz-tooltip nzTooltipTitle="More Info" nzType="info" nzTheme="outline"
+                (click)="openShowMore(data.PurchaseMainID)"></i>
+        </ng-template>
+        <ng-template #delete>
+            <i nz-icon nz-tooltip nzTooltipTitle="Delete" nzType="delete" nzTheme="outline"></i>
+        </ng-template>
+    </div>
+</div>
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Upload More Files(Image)" (nzOnCancel)="openMore('')"
+    (nzOnOk)="uploadFile()">
+    <ng-container *nzModalContent>
+        <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="toBillAmt" nzRequired>Files</nz-form-label>
+            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please Upload Files!">
+                <input nz-input type="file" (change)="fileChange($event)" #fileInput multiple="true" />
+            </nz-form-control>
+        </nz-form-item>
+    </ng-container>
+</nz-modal>
+<nz-modal [(nzVisible)]="isMoreVisible" nzTitle="Purchase Details" (nzOnCancel)="openShowMore('')" (nzOnOk)="openShowMore('')">
+    <ng-container *nzModalContent>
+        <p>Purchase Date : {{popupDetails.PurchaseDateClone}}</p>
+        <p>Amount : {{popupDetails.ToBillAmt}}</p>
+        <p>Type : {{popupDetails.Type}}</p>
+        <p>Company : {{popupDetails.CompanyName}}</p>
+        <p>User : {{popupDetails.UserName}}</p>
+        <p>Vendor : {{popupDetails.VendorName}}</p>
+    </ng-container>
+</nz-modal>

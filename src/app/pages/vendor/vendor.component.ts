@@ -14,8 +14,8 @@ export class VendorComponent implements OnInit {
   isExists = false;
   isValidation = false;
   vendorForm: FormGroup;
-  constructor(private service: CommonService, private fb: FormBuilder,private router : Router) { 
-    if(!this.service.checkLogin()){
+  constructor(private service: CommonService, private fb: FormBuilder, private router: Router) {
+    if (!this.service.checkLogin()) {
       this.router.navigate(['/login']);
     }
   }
@@ -30,16 +30,20 @@ export class VendorComponent implements OnInit {
     });
   }
   getVendorList() {
+    this.service.isLoader = true;
+
     this.service.API_GET("Vendor/GetVendors").subscribe(response => {
       let result = response.result;
       if (result.IsSuccess) {
         this.vendorList = result.lstVendor;
+        this.service.isLoader = false;
+
       }
     })
   }
   openModel() {
     this.isVisible = !this.isVisible;
-    if(!this.isVisible){
+    if (!this.isVisible) {
       this.vendorForm.reset();
     }
   }
@@ -59,7 +63,7 @@ export class VendorComponent implements OnInit {
     return this.vendorForm.controls;
   }
   saveVendor() {
-    this.vendorForm.markAllAsTouched(); 
+    this.vendorForm.markAllAsTouched();
     Object.values(this.vendorForm.controls).forEach(control => {
       if (control.invalid) {
         control.markAsDirty();
@@ -68,7 +72,7 @@ export class VendorComponent implements OnInit {
     });
     if (this.vendorForm.valid) {
       if (this.vendorForm.value['vendorID'] === 0) {
-        if(this.vendorList.length > 0){
+        if (this.vendorList.length > 0) {
           this.vendorList.forEach(element => {
             if (element.VendorName === this.vendorForm.value['vendorName']) {
               this.isExists = true;
@@ -81,10 +85,13 @@ export class VendorComponent implements OnInit {
             place: this.vendorForm.value['place'],
             mobileNo: this.vendorForm.value['mobileNo']
           }
+          this.service.isLoader = true;
           this.service.API_POST("Vendor/AddVendor", data).subscribe(response => {
             let result = response;
             if (result.isSuccess) {
               this.openModel();
+              this.service.isLoader = false;
+
               this.service.showMessage('success', 'Vendor Added Successfully!')
               this.getVendorList();
               this.vendorForm.reset();
@@ -94,11 +101,14 @@ export class VendorComponent implements OnInit {
             this.openModel();
             this.vendorForm.reset();
             this.isExists = false;
+            this.service.isLoader = false;
+
             this.service.showMessage('error', 'Error while adding data, please try again!')
           })
         } else {
           this.service.showMessage('info', 'Vendor Already Exists!');
           this.isExists = false;
+          this.service.isLoader = false;
         }
       } else {
         if (this.vendorForm.value['vendorID'] > 0) {
@@ -116,6 +126,8 @@ export class VendorComponent implements OnInit {
               place: this.vendorForm.value['place'],
               mobileNo: this.vendorForm.value['mobileNo']
             }
+            this.service.isLoader = true;
+
             this.service.API_POST("Vendor/AddVendor", form).subscribe(response => {
               let result = response;
               if (result.isSuccess) {
@@ -123,17 +135,23 @@ export class VendorComponent implements OnInit {
                 this.service.showMessage('success', 'Vendor Update Successfully!')
                 this.getVendorList();
                 this.vendorForm.reset();
+                this.service.isLoader = false;
+
               }
               this.isExists = false;
             }, (error) => {
               this.openModel();
               this.vendorForm.reset();
               this.isExists = false;
+              this.service.isLoader = false;
+
               this.service.showMessage('error', 'Error while updating data, please try again!')
             })
           } else {
             this.service.showMessage('info', 'Vendor Already Exists!');
             this.isExists = false;
+            this.service.isLoader = false;
+
           }
         }
       }
@@ -142,17 +160,21 @@ export class VendorComponent implements OnInit {
   deleteRecord(id) {
     if (id) {
       var data = {
-        vendorID:id
+        vendorID: id
       }
+      this.service.isLoader = true;
+
       this.service.API_DELETE("Vendor/DeleteVendor", data).subscribe(response => {
         let result = response;
         if (result.isSuccess) {
           this.service.showMessage('success', 'Vendor Delete Successfully!')
           this.getVendorList();
+          this.service.isLoader = false;
           this.vendorForm.reset();
         }
       }, (error) => {
         this.vendorForm.reset();
+        this.service.isLoader = false;
         this.service.showMessage('error', 'Error while deleting data, please try again!')
       })
     }

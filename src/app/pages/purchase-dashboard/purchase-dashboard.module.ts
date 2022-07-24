@@ -11,6 +11,7 @@ import { PurchaseDashboardRoutingModule } from './purchase-dashboard-routing.mod
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { SharedModule } from 'src/app/services/shared.module';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { NzImageModule } from 'ng-zorro-antd/image';
 
 @NgModule({
   imports: [
@@ -25,7 +26,8 @@ import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
     NzFormModule,
     NzBreadCrumbModule,
     SharedModule,
-    NzDatePickerModule
+    NzDatePickerModule,
+    NzImageModule
   ],
   declarations: [PurchaseDashboardComponent],
   exports: [PurchaseDashboardComponent]

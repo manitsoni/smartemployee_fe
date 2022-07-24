@@ -101,9 +101,12 @@
     <nz-header></nz-header>
     <nz-content>
       <div class="inner-content">
+        <div class="overlay" *ngIf="service.isLoader">
+          <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
+        </div>
         <router-outlet></router-outlet>
       </div>
     </nz-content>
-    <nz-footer>Global Mining ©2020 Implement By Manit Soni</nz-footer>
+    <nz-footer>Global Mining ©2022 Developed By Manit Soni</nz-footer>
   </nz-layout>
 </nz-layout>

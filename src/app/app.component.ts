@@ -12,7 +12,7 @@ export class AppComponent {
   isCollapsed = false;
   isLogin =false;
   isSuperAdmin = false;
-  constructor(private service : CommonService,private route : Router,private router:ActivatedRoute,
+  constructor(public service : CommonService,private route : Router,private router:ActivatedRoute,
     public platform: Platform){
       this.loadModalPwa();
     if(this.service.checkLogin()){
@@ -26,9 +26,8 @@ export class AppComponent {
   }
   logout(){
     localStorage.clear();
-    this.route.navigateByUrl('/login').then(() => {
-      window.location.reload();
-    });
+    window.location.reload();
+    // this.route.navigateByUrl('/login');
   }
   modalPwaPlatform: string|undefined;
   modalPwaEvent: any;

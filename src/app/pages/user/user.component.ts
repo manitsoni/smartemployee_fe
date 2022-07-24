@@ -14,10 +14,10 @@ export class UserComponent implements OnInit {
   userListClone = [];
   isExists = false;
   companyList = [];
-  searchValue:string="";
+  searchValue: string = "";
   selectedCompany;
-  constructor(private service: CommonService, private fb: FormBuilder,private router : Router) { 
-    if(!this.service.checkLogin()){
+  constructor(private service: CommonService, private fb: FormBuilder, private router: Router) {
+    if (!this.service.checkLogin()) {
       this.router.navigate(['/login']);
     }
   }
@@ -31,19 +31,25 @@ export class UserComponent implements OnInit {
     this.isVisible = !this.isVisible;
   }
   getCompanyList() {
+    this.service.isLoader = true;
+
     this.service.API_GET("Company/GetCompany").subscribe(response => {
       let result = response.result;
       if (result.IsSuccess) {
+        this.service.isLoader = false;
+
         this.companyList = result.lstCompany;
       }
     })
   }
   getUserList() {
+    this.service.isLoader = true;
     this.service.API_GET("Users/GetUsers").subscribe(response => {
       let result = response.result;
       if (result.IsSuccess) {
         this.userList = result.lstUsers;
-        
+        this.service.isLoader = false;
+
       }
       this.userList.forEach(element => {
         var companyObj = this.companyList.filter(x => x.CompanyID === element.CompanyID)[0]
@@ -98,6 +104,8 @@ export class UserComponent implements OnInit {
             Password: this.user.value['password'],
             IsMultiUser: this.user.value['isMultiUser']
           }
+          this.service.isLoader = true;
+
           this.service.API_POST("Users/AddUser", data).subscribe(response => {
             let result = response;
             if (result.isSuccess) {
@@ -105,17 +113,23 @@ export class UserComponent implements OnInit {
               this.service.showMessage('success', 'User Added Successfully!')
               this.getUserList();
               this.user.reset();
+              this.service.isLoader = false;
+
             }
             this.isExists = false;
           }, (error) => {
             this.openModel();
             this.user.reset();
             this.isExists = false;
+            this.service.isLoader = false;
+
             this.service.showMessage('error', 'Error while adding data, please try again!')
           })
         } else {
           this.service.showMessage('info', 'User Already Exists!');
           this.isExists = false;
+          this.service.isLoader = false;
+
         }
       } else {
         if (this.user.value['userId'] > 0) {
@@ -134,6 +148,8 @@ export class UserComponent implements OnInit {
               Password: this.user.value['password'],
               IsMultiUser: this.user.value['isMultiUser']
             }
+            this.service.isLoader = true;
+
             this.service.API_POST("Users/AddUser", form).subscribe(response => {
               let result = response;
               if (result.isSuccess) {
@@ -141,15 +157,21 @@ export class UserComponent implements OnInit {
                 this.service.showMessage('success', 'User Update Successfully!')
                 this.getUserList();
                 this.user.reset();
+                this.service.isLoader = false;
+
               }
               this.isExists = false;
             }, (error) => {
               this.openModel();
               this.user.reset();
               this.isExists = false;
+              this.service.isLoader = false;
+
               this.service.showMessage('error', 'Error while updating data, please try again!')
             })
           } else {
+            this.service.isLoader = false;
+
             this.service.showMessage('info', 'User Already Exists!');
             this.isExists = false;
           }
@@ -161,7 +183,7 @@ export class UserComponent implements OnInit {
     if (this.searchValue.length > 2) {
       this.userList = this.userListClone.filter(x => (x.UserName.toLowerCase().includes(this.searchValue.toLowerCase()) ||
         (x.CompanyName.toLowerCase().includes(this.searchValue.toLowerCase()))));
-    }else{
+    } else {
       this.userList = this.userListClone;
     }
   }

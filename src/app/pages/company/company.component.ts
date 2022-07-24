@@ -14,11 +14,11 @@ export class CompanyComponent implements OnInit {
   isExists = false;
   isValidation = false;
   companyForm: FormGroup;
-  constructor(private service: CommonService, private fb: FormBuilder,private router : Router) {
-    if(!this.service.checkLogin()){
+  constructor(private service: CommonService, private fb: FormBuilder, private router: Router) {
+    if (!this.service.checkLogin()) {
       this.router.navigate(['/login']);
     }
-   }
+  }
 
   ngOnInit(): void {
     this.getCompanyList();
@@ -28,10 +28,12 @@ export class CompanyComponent implements OnInit {
     });
   }
   getCompanyList() {
+    this.service.isLoader = true;
     this.service.API_GET("Company/GetCompany").subscribe(response => {
       let result = response.result;
       if (result.IsSuccess) {
         this.companyList = result.lstCompany;
+        this.service.isLoader = false;
       }
     })
   }
@@ -51,7 +53,7 @@ export class CompanyComponent implements OnInit {
   get companyFormControl() {
     return this.companyForm.controls;
   }
-  saveCompany() { 
+  saveCompany() {
     this.companyForm.markAllAsTouched();
     if (this.companyForm.valid) {
       if (this.companyForm.value['companyId'] === 0) {
@@ -64,6 +66,8 @@ export class CompanyComponent implements OnInit {
           var data = {
             CompanyName: this.companyForm.value['companyName']
           }
+          this.service.isLoader = true;
+
           this.service.API_POST("Company/AddCompany", data).subscribe(response => {
             let result = response;
             if (result.isSuccess) {
@@ -71,12 +75,15 @@ export class CompanyComponent implements OnInit {
               this.service.showMessage('success', 'Company Added Successfully!')
               this.getCompanyList();
               this.companyForm.reset();
+              this.service.isLoader = false;
+
             }
             this.isExists = false;
           }, (error) => {
             this.openModel();
             this.companyForm.reset();
             this.isExists = false;
+            this.service.isLoader = false;
             this.service.showMessage('error', 'Error while adding data, please try again!')
           })
         } else {
@@ -97,12 +104,16 @@ export class CompanyComponent implements OnInit {
               CompanyID: this.companyForm.value['companyId'],
               CompanyName: this.companyForm.value['companyName']
             }
+            this.service.isLoader = true;
+
             this.service.API_POST("Company/AddCompany", form).subscribe(response => {
               let result = response;
               if (result.isSuccess) {
                 this.openModel();
                 this.service.showMessage('success', 'Company Update Successfully!')
                 this.getCompanyList();
+                this.service.isLoader = false;
+
                 this.companyForm.reset();
               }
               this.isExists = false;
@@ -110,6 +121,8 @@ export class CompanyComponent implements OnInit {
               this.openModel();
               this.companyForm.reset();
               this.isExists = false;
+              this.service.isLoader = false;
+
               this.service.showMessage('error', 'Error while updating data, please try again!')
             })
           } else {
@@ -125,9 +138,13 @@ export class CompanyComponent implements OnInit {
       var data = {
         CompanyID: parseInt(id)
       }
+      this.service.isLoader = true;
+
       this.service.API_DELETE("Company/DeleteCompany", data).subscribe(response => {
         let result = response;
         if (result.isSuccess) {
+          this.service.isLoader = false;
+
           this.service.showMessage('success', 'Company Delete Successfully!')
           this.getCompanyList();
           this.companyForm.reset();

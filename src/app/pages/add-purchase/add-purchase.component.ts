@@ -16,24 +16,24 @@ export class AddPurchaseComponent implements OnInit {
   isExists = false;
   isValidation = false;
   vendorForm: FormGroup;
-  selectedFiles: Array<File>=[];
-  typeList :string[] = ["Cash","Credit"];
-  
-  constructor(private fb: FormBuilder, private service: CommonService,private route : Router) { }
+  selectedFiles: Array<File> = [];  
+  typeList: string[] = ["Cash", "Credit"];
+
+  constructor(private fb: FormBuilder, private service: CommonService, private route: Router) { }
 
   ngOnInit(): void {
     this.getVendorList();
     this.purchaseForm = this.fb.group({
       purchaseDate: [null, [Validators.required]],
-      vendorID: [null,[Validators.required]],
+      vendorID: [null, [Validators.required]],
       vendorName: [null],
-      toBillAmt: [null, [Validators.required,Validators.pattern("^([0-9])+(.[0-9]{0,9})?$")]],
+      toBillAmt: [null, [Validators.required, Validators.pattern("^([0-9])+(.[0-9]{0,9})?$")]],
       companyID: [localStorage.getItem("companyId")],
       userID: [localStorage.getItem("userId")],
       userName: [localStorage.getItem("loggedUser")],
       companyName: [null],
       files: [],
-      type:['',Validators.required]
+      type: ['', Validators.required]
     });
     this.vendorForm = this.fb.group({
       vendorID: [null],
@@ -43,10 +43,12 @@ export class AddPurchaseComponent implements OnInit {
     });
   }
   getVendorList() {
+    this.service.isLoader = true;
     this.service.API_GET("Vendor/GetVendors").subscribe(response => {
       let result = response.result;
       if (result.IsSuccess) {
         this.vendorList = result.lstVendor;
+        this.service.isLoader = false;
       }
     })
   }
@@ -70,8 +72,9 @@ export class AddPurchaseComponent implements OnInit {
         companyID: this.purchaseForm.value.companyID,
         userID: this.purchaseForm.value.userID,
         userName: this.purchaseForm.value.userName,
-        type : this.purchaseForm.value.type
+        type: this.purchaseForm.value.type
       }
+      this.service.isLoader = true;
       this.service.API_POST("PurchaseMain/AddPurchaseMain", formData).subscribe(res => {
         if (res.isSuccess) {
           const formData = new FormData();
@@ -85,19 +88,29 @@ export class AddPurchaseComponent implements OnInit {
               this.service.showMessage('success', 'Purchase Added Successfully!')
               this.purchaseForm.reset();
               this.selectedFiles = [];
+              this.service.isLoader = false;
               this.route.navigateByUrl("/purchase")
             }
-          })
+          },(error =>{
+            if(error.status === 200){
+              this.service.showMessage('success', 'Purchase Added Successfully!')
+              this.purchaseForm.reset();
+              this.selectedFiles = [];
+              this.service.isLoader = false;
+              this.route.navigateByUrl("/purchase")
+            }
+          }))
         }
       })
-    }else{
-      if(this.selectedFiles.length  === 0){
-        this.service.showMessage("error","Please upload file");
+    } else {
+      if (this.selectedFiles.length === 0) {
+        this.service.isLoader = false;
+        this.service.showMessage("error", "Please upload file");
       }
     }
   }
   fileChange(event) {
-    this.selectedFiles =[];
+    this.selectedFiles = [];
     const files: FileList = event.target.files;
     const fileList = new Array<File>();
     const formData = new FormData();
@@ -108,7 +121,7 @@ export class AddPurchaseComponent implements OnInit {
     this.selectedFiles = fileList;
   }
   saveVendor() {
-    this.vendorForm.markAllAsTouched(); 
+    this.vendorForm.markAllAsTouched();
     Object.values(this.vendorForm.controls).forEach(control => {
       if (control.invalid) {
         control.markAsDirty();
@@ -117,8 +130,8 @@ export class AddPurchaseComponent implements OnInit {
     });
     if (this.vendorForm.valid) {
       if (this.vendorForm.value['vendorID'] === null) {
-        if(this.vendorList.length > 0){
-          this.vendorList.forEach((element:any) => {
+        if (this.vendorList.length > 0) {
+          this.vendorList.forEach((element: any) => {
             if (element.VendorName.toLowerCase() === this.vendorForm.value['vendorName'].toLowerCase()) {
               this.isExists = true;
             }
@@ -130,6 +143,7 @@ export class AddPurchaseComponent implements OnInit {
             place: this.vendorForm.value['place'],
             mobileNo: this.vendorForm.value['mobileNo']
           }
+          this.service.isLoader = true;
           this.service.API_POST("Vendor/AddVendor", data).subscribe(response => {
             let result = response;
             if (result.isSuccess) {
@@ -137,21 +151,26 @@ export class AddPurchaseComponent implements OnInit {
               this.service.showMessage('success', 'Vendor Added Successfully!')
               this.getVendorList();
               this.vendorForm.reset();
+              this.service.isLoader = false;
+
             }
             this.isExists = false;
           }, (error) => {
             this.openModel();
             this.vendorForm.reset();
             this.isExists = false;
+            this.service.isLoader = false;
+
             this.service.showMessage('error', 'Error while adding data, please try again!')
           })
         } else {
           this.service.showMessage('info', 'Vendor Already Exists!');
+
           this.isExists = false;
         }
       } else {
         if (this.vendorForm.value['vendorID'] > 0) {
-          this.vendorList.forEach((element :any) => {
+          this.vendorList.forEach((element: any) => {
             if (element.VendorName === this.vendorForm.value['vendorName']) {
               if (element.VendorID !== this.vendorForm.value['vendorID']) {
                 this.isExists = true;
@@ -165,12 +184,16 @@ export class AddPurchaseComponent implements OnInit {
               place: this.vendorForm.value['place'],
               mobileNo: this.vendorForm.value['mobileNo']
             }
+            this.service.isLoader = true;
+
             this.service.API_POST("Vendor/AddVendor", form).subscribe(response => {
               let result = response;
               if (result.isSuccess) {
                 this.openModel();
                 this.service.showMessage('success', 'Vendor Update Successfully!')
                 this.getVendorList();
+                this.service.isLoader = false;
+
                 this.vendorForm.reset();
               }
               this.isExists = false;
@@ -190,7 +213,7 @@ export class AddPurchaseComponent implements OnInit {
   }
   openModel() {
     this.isVisible = !this.isVisible;
-    if(!this.isVisible){
+    if (!this.isVisible) {
       this.vendorForm.reset();
       this.getVendorList();
     }
