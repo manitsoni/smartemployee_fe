@@ -7,6 +7,7 @@ import { Observable } from "rxjs";
     providedIn: "root",
 })
 export class CommonService {
+    isLoader : boolean = false;
     constructor(private _http: HttpClient,
         private message: NzMessageService) {
 
@@ -16,7 +17,7 @@ export class CommonService {
     }
     environmentUrl = "http://202.89.76.154:1418/api/"
     azureUrl ="https://smartemployee20220718194837.azurewebsites.net/api/"
-    API_POST(URL: string, data: any) : Observable<any>{
+    API_POST(URL: string, data: any) : Observable<any>{ 
         const httpOptions = {
             headers: new HttpHeaders({
                 'Access-Control-Allow-Origin': '*',
