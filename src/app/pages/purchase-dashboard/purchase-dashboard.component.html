@@ -22,7 +22,7 @@
         autocomplete="off" style="margin-left: 15px;margin-bottom:15px;width:350px" />
 </div>
 
-<nz-table #basicTable [nzData]="purchaseList" [nzPageSize]="5" nzHideOnSinglePage="true" *ngIf="isMobile">
+<nz-table #basicTable [nzData]="purchaseList" [nzPageSize]="5" nzHideOnSinglePage="true" *ngIf="!isMobile">
     <thead>
         <tr>
             <!-- <th>#</th> -->
@@ -54,7 +54,7 @@
         </tr>
     </tbody>
 </nz-table>
-<div *ngIf="!isMobile">
+<div *ngIf="isMobile">
     <nz-empty *ngIf="purchaseList.length === 0"></nz-empty>
     <div *ngFor="let data of purchaseList | paginate: { itemsPerPage: 3, currentPage: p };let i = index">
         <nz-card [nzPageSize]="5" style="width:100%;" [nzTitle]="data.PurchaseDateClone"
