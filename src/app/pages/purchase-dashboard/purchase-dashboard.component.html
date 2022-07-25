@@ -110,9 +110,9 @@
         <p>Vendor : {{popupDetails.VendorName}}</p>
     </ng-container>
 </nz-modal>
-<nz-modal [(nzVisible)]="isAdvSearch" nzTitle="Purchase Details" (nzOnCancel)="showSearch()" (nzOnOk)="advanceSearch()">
+<nz-modal [(nzVisible)]="isAdvSearch" nzTitle="Advance Search" (nzOnCancel)="showSearch()" (nzOnOk)="advanceSearch()">
     <ng-container>
-        <nz-form-item>
+        <nz-form-item *ngIf="isSuperAdmin">
             <nz-select style="width: 100%;" nzShowSearch nzAllowClear nzPlaceHolder="Search by company"
                 [(ngModel)]="model.selectedCompany">
                 <span *ngFor="let data of companyList;let i=index;">
