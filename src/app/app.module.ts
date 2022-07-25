@@ -18,6 +18,8 @@ import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NgxPaginationModule } from 'ngx-pagination';
+
 registerLocaleData(en);
 
 @NgModule({
@@ -36,6 +38,7 @@ registerLocaleData(en);
     NzMessageModule,
     NzBreadCrumbModule,
     NzSpinModule,
+    NgxPaginationModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production,
       registrationStrategy: 'registerWhenStable:30000'

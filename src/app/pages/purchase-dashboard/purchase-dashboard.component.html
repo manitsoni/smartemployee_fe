@@ -14,16 +14,15 @@
     <button *ngIf="!isSuperAdmin" nz-button [nzType]="'primary'" routerLink="/add-purchase" class="gutter-row"><span>Add
             purchase</span></button> &nbsp;&nbsp;&nbsp;
     <button nz-button [nzType]="'primary'" (click)="refresh()" class="gutter-row"><span>
-            Refresh</span></button>
-
+            Refresh</span></button>&nbsp;&nbsp;&nbsp;
+    <br>
+    <button nz-button [nzType]="'primary'" (click)="showSearch()" class="gutter-row"><span>
+            More Search</span></button>&nbsp;&nbsp;&nbsp;
     <input nz-input placeholder="Search purchase" [(ngModel)]="searchValue" (keydown)="searchPurchase()"
         autocomplete="off" style="margin-left: 15px;margin-bottom:15px;width:350px" />
-    <!-- <nz-range-picker [(ngModel)]="fromPurchaseDate" (ngModelChange)="searchByDate($event)"></nz-range-picker> -->
-
 </div>
 
-<br>
-<nz-table #basicTable [nzData]="purchaseList" [nzPageSize]="5" nzHideOnSinglePage="true" *ngIf="!isMobile">
+<nz-table #basicTable [nzData]="purchaseList" [nzPageSize]="5" nzHideOnSinglePage="true" *ngIf="isMobile">
     <thead>
         <tr>
             <!-- <th>#</th> -->
@@ -55,9 +54,9 @@
         </tr>
     </tbody>
 </nz-table>
-<div *ngIf="isMobile">
+<div *ngIf="!isMobile">
     <nz-empty *ngIf="purchaseList.length === 0"></nz-empty>
-    <div *ngFor="let data of purchaseList;let i = index">
+    <div *ngFor="let data of purchaseList | paginate: { itemsPerPage: 3, currentPage: p };let i = index">
         <nz-card [nzPageSize]="5" style="width:100%;" [nzTitle]="data.PurchaseDateClone"
             [nzActions]="[image, upload, download,delete,view]">
             <p>Amount : {{data.ToBillAmt}}</p>
@@ -83,6 +82,11 @@
             <i nz-icon nz-tooltip nzTooltipTitle="Delete" nzType="delete" nzTheme="outline"></i>
         </ng-template>
     </div>
+    <br>
+    <div>
+        <pagination-controls (pageChange)="p = $event" class="my-pagination"></pagination-controls>
+    </div>
+
 </div>
 <nz-modal [(nzVisible)]="isVisible" nzTitle="Upload More Files(Image)" (nzOnCancel)="openMore('')"
     (nzOnOk)="uploadFile()">
@@ -105,4 +109,36 @@
         <p>User : {{popupDetails.UserName}}</p>
         <p>Vendor : {{popupDetails.VendorName}}</p>
     </ng-container>
+</nz-modal>
+<nz-modal [(nzVisible)]="isAdvSearch" nzTitle="Purchase Details" (nzOnCancel)="showSearch()" (nzOnOk)="advanceSearch()">
+    <ng-container>
+        <nz-form-item>
+            <nz-select style="width: 100%;" nzShowSearch nzAllowClear nzPlaceHolder="Search by company"
+                [(ngModel)]="model.selectedCompany">
+                <span *ngFor="let data of companyList;let i=index;">
+                    <nz-option [nzValue]="data.CompanyName" [nzLabel]="data.CompanyName"></nz-option>
+                </span>
+            </nz-select>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-select style="width: 100%;" nzShowSearch nzAllowClear nzPlaceHolder="Search by vendor"
+                [(ngModel)]="model.selectedVendor">
+                <span *ngFor="let data of vendorList;let i=index;">
+                    <nz-option [nzValue]="data.VendorName" [nzLabel]="data.VendorName"></nz-option>
+                </span>
+            </nz-select>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-select style="width: 100%;" nzShowSearch nzAllowClear nzPlaceHolder="Search by user"
+                [(ngModel)]="model.selectedUser">
+                <span *ngFor="let data of userList;let i=index;">
+                    <nz-option [nzValue]="data.UserName" [nzLabel]="data.UserName"></nz-option>
+                </span>
+            </nz-select>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-range-picker [(ngModel)]="fromPurchaseDate"></nz-range-picker>
+        </nz-form-item>
+    </ng-container>
+
 </nz-modal>

@@ -95,6 +95,8 @@ export class VendorComponent implements OnInit {
               this.service.showMessage('success', 'Vendor Added Successfully!')
               this.getVendorList();
               this.vendorForm.reset();
+            }else {
+              this.service.showMessage("warning", response.Message)
             }
             this.isExists = false;
           }, (error) => {
@@ -137,6 +139,8 @@ export class VendorComponent implements OnInit {
                 this.vendorForm.reset();
                 this.service.isLoader = false;
 
+              }else {
+                this.service.showMessage("warning", response.Message)
               }
               this.isExists = false;
             }, (error) => {

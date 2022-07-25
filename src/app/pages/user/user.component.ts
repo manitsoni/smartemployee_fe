@@ -49,13 +49,15 @@ export class UserComponent implements OnInit {
       if (result.IsSuccess) {
         this.userList = result.lstUsers;
         this.service.isLoader = false;
-
+        this.userList.forEach(element => {
+          var companyObj = this.companyList.filter(x => x.CompanyID === element.CompanyID)[0]
+          element['CompanyName'] = companyObj.CompanyName
+        });
+        this.userListClone = [...this.userList]
+      } else {
+        this.service.showMessage("warning", response.Message)
       }
-      this.userList.forEach(element => {
-        var companyObj = this.companyList.filter(x => x.CompanyID === element.CompanyID)[0]
-        element['CompanyName'] = companyObj.CompanyName
-      });
-      this.userListClone = [...this.userList]
+
     })
   }
   userForm() {
@@ -115,6 +117,9 @@ export class UserComponent implements OnInit {
               this.user.reset();
               this.service.isLoader = false;
 
+            }else {
+              this.service.isLoader = false
+              this.service.showMessage("warning", response.Message)
             }
             this.isExists = false;
           }, (error) => {
@@ -159,6 +164,9 @@ export class UserComponent implements OnInit {
                 this.user.reset();
                 this.service.isLoader = false;
 
+              }else {
+                this.service.isLoader = false
+                this.service.showMessage("warning", response.Message)
               }
               this.isExists = false;
             }, (error) => {

@@ -72,7 +72,6 @@ export class LoginComponent implements OnInit {
             }
           } else {
             this.service.isLoader = false;
-
             this.service.showMessage('error', 'Login not found');
           }
         }, (error) => {

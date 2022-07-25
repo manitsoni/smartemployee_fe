@@ -3,6 +3,7 @@ import { CommonService } from 'src/app/services/comman.services';
 import * as FileSaver from 'file-saver'
 import { NzImageService } from 'ng-zorro-antd/image';
 import { HttpClient } from '@angular/common/http';
+import { SearchModel } from './purchase-model';
 @Component({
   selector: 'app-purchase-dashboard',
   templateUrl: './purchase-dashboard.component.html',
@@ -21,13 +22,22 @@ export class PurchaseDashboardComponent implements OnInit {
   toPurchaseDate: any;
   array = [1, 2, 3, 4];
   effect = 'scrollx';
+  p: number = 1;
   isVisible: boolean = false;
   isMobile: boolean = false;
   imageUrl: any[] = [];
   currentUpload: string = "";
   selectedFiles: Array<File> = [];
-  popupDetails:any;
+  popupDetails: any;
   isMoreVisible: boolean;
+  isAdvSearch: boolean = false;
+  selectedCompany: string = "";
+  selectedVendor: string = "";
+  selectedUser: string = "";
+  fromDate: Date;
+  toDate: Date;
+  model: SearchModel = new SearchModel();
+
   constructor(private service: CommonService, private nzImageService: NzImageService, public http: HttpClient) {
     this.isSuperAdmin = localStorage.getItem("isSuperUser") && localStorage.getItem("isSuperUser").length > 0 ? true : false;
     if (window.innerWidth < 560) {
@@ -38,15 +48,11 @@ export class PurchaseDashboardComponent implements OnInit {
   ngOnInit(): void {
     this.service.isLoader = true;
     this.getCompanyList();
-    this.getVendorList();
-    this.getUserList();
     this.userId = localStorage.getItem("userId");
   }
-  refresh(){
+  refresh() {
     this.service.isLoader = true;
     this.getCompanyList();
-    this.getVendorList();
-    this.getUserList();
     this.userId = localStorage.getItem("userId");
   }
   openView(purchaseId) {
@@ -91,6 +97,10 @@ export class PurchaseDashboardComponent implements OnInit {
       let result = response.result;
       if (result.IsSuccess) {
         this.companyList = result.lstCompany;
+        this.getVendorList();
+      }else{
+        this.service.isLoader = false
+        this.service.showMessage("warning",result.Message)
       }
     })
   }
@@ -99,7 +109,7 @@ export class PurchaseDashboardComponent implements OnInit {
       let result = response.result;
       if (result.IsSuccess) {
         this.vendorList = result.lstVendor;
-
+        this.getUserList();
       }
     })
   }
@@ -118,9 +128,9 @@ export class PurchaseDashboardComponent implements OnInit {
       if (result.IsSuccess) {
         this.service.isLoader = false;
         if (localStorage.getItem("isSuperUser")) {
-          this.purchaseList = result.lstPurchaseMain;
+          this.purchaseList = result.lstPurchaseMain.reverse();
         } else {
-          this.purchaseList = result.lstPurchaseMain.filter(x => x.UserID === Number.parseInt(this.userId));
+          this.purchaseList = result.lstPurchaseMain.filter(x => x.UserID === Number.parseInt(this.userId)).reverse();
         }
       }
       this.purchaseListClone = [...this.purchaseList];
@@ -217,13 +227,40 @@ export class PurchaseDashboardComponent implements OnInit {
       }))
     }
   }
-  openShowMore(id){
-    if(id !== '' && this.purchaseList){
+  openShowMore(id) {
+    if (id !== '' && this.purchaseList) {
       this.popupDetails = this.purchaseList.filter(x => x.PurchaseMainID === id)[0]
       this.isMoreVisible = true;
-    }else{
+    } else {
       this.popupDetails = null;
       this.isMoreVisible = false;
     }
+  }
+  showSearch() {
+    this.isAdvSearch = !this.isAdvSearch
+    if (!this.isAdvSearch) {
+      this.selectedUser = "";
+      this.selectedCompany = "";
+      this.selectedVendor = "";
+    }
+  }
+  advanceSearch() {
+    if (this.purchaseList) {
+      if (!this.purchaseList || this.purchaseList.length === 0) {
+        this.purchaseList = this.purchaseListClone
+      };
+      if (!this.model || !this.model.selectedUser && !this.model.selectedVendor && !this.model.selectedCompany) { this.purchaseList = this.purchaseListClone };
+      let d1 = new Date(this.fromPurchaseDate[0]).toLocaleDateString("en-In")
+      let d2 = new Date(this.fromPurchaseDate[1]).toLocaleDateString("en-In")
+      this.purchaseList = this.purchaseListClone.filter((data) => {
+        return (!this.model.selectedUser || data.UserName.includes(this.model.selectedUser)) &&
+          (!this.model.selectedCompany || data.CompanyName.includes(this.model.selectedCompany)) &&
+          (!this.model.selectedVendor || data.VendorName.includes(this.model.selectedVendor)) &&
+          (!d1 || new Date(data.PurchaseDateClone) >= new Date(d1)) &&
+          (!d2 || new Date(data.PurchaseDateClone) <= new Date(d2));
+      })
+
+    }
+    this.showSearch();
   }
 }

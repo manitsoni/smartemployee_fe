@@ -120,6 +120,9 @@ export class AddPurchaseComponent implements OnInit {
             }
           }))
         }
+        else{
+          this.service.showMessage("warning",res.Message)
+        }
       })
     } else {
       if (this.selectedFiles.length === 0) {
@@ -172,6 +175,9 @@ export class AddPurchaseComponent implements OnInit {
               this.vendorForm.reset();
               this.service.isLoader = false;
 
+            }else{
+              this.service.isLoader = false
+              this.service.showMessage("warning",response.Message)
             }
             this.isExists = false;
           }, (error) => {
@@ -214,6 +220,9 @@ export class AddPurchaseComponent implements OnInit {
                 this.service.isLoader = false;
 
                 this.vendorForm.reset();
+              }else{
+                this.service.isLoader = false
+                this.service.showMessage("warning",response.Message)
               }
               this.isExists = false;
             }, (error) => {

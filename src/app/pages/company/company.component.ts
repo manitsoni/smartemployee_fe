@@ -77,6 +77,9 @@ export class CompanyComponent implements OnInit {
               this.companyForm.reset();
               this.service.isLoader = false;
 
+            }else{
+              this.service.isLoader = false
+              this.service.showMessage("warning",response.Message)
             }
             this.isExists = false;
           }, (error) => {
@@ -115,6 +118,10 @@ export class CompanyComponent implements OnInit {
                 this.service.isLoader = false;
 
                 this.companyForm.reset();
+              }
+              else{
+                this.service.isLoader = false
+                this.service.showMessage("warning",response.Message)
               }
               this.isExists = false;
             }, (error) => {

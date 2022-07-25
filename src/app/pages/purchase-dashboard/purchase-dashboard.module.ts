@@ -12,6 +12,9 @@ import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { SharedModule } from 'src/app/services/shared.module';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzImageModule } from 'ng-zorro-antd/image';
+import { NzPaginationModule } from 'ng-zorro-antd/pagination';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { AdvanceSearchPipe } from './advanceSearch';
 
 @NgModule({
   imports: [
@@ -27,9 +30,11 @@ import { NzImageModule } from 'ng-zorro-antd/image';
     NzBreadCrumbModule,
     SharedModule,
     NzDatePickerModule,
-    NzImageModule
+    NzImageModule,
+    NzPaginationModule,
+    NgxPaginationModule
   ],
-  declarations: [PurchaseDashboardComponent],
+  declarations: [PurchaseDashboardComponent,AdvanceSearchPipe],
   exports: [PurchaseDashboardComponent]
 })
 export class PurchaseModule { }
