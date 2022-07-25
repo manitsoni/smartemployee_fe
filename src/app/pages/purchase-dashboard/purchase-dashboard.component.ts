@@ -259,7 +259,6 @@ export class PurchaseDashboardComponent implements OnInit {
           (!d1 || new Date(data.PurchaseDateClone) >= new Date(d1)) &&
           (!d2 || new Date(data.PurchaseDateClone) <= new Date(d2));
       })
-
     }
     this.showSearch();
   }
