@@ -26,8 +26,8 @@ export class AppComponent {
   }
   logout(){
     localStorage.clear();
-    window.location.reload();
-    // this.route.navigateByUrl('/login');
+    // window.location.reload();
+    this.route.navigateByUrl('/login');
   }
   modalPwaPlatform: string|undefined;
   modalPwaEvent: any;
@@ -57,4 +57,4 @@ export class AppComponent {
   public closePwa(): void {
     this.modalPwaPlatform = undefined;
   }
-} 
+}
