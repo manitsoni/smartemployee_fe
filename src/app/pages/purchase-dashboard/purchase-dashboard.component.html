@@ -112,8 +112,8 @@
 </nz-modal>
 <nz-modal [(nzVisible)]="isAdvSearch" nzTitle="Advance Search" (nzOnCancel)="showSearch()" (nzOnOk)="advanceSearch()">
     <ng-container>
-        <nz-form-item *ngIf="isSuperAdmin">
-            <nz-select style="width: 100%;" nzShowSearch nzAllowClear nzPlaceHolder="Search by company"
+        <nz-form-item>
+            <nz-select *ngIf="isSuperAdmin" style="width: 100%;" nzShowSearch nzAllowClear nzPlaceHolder="Search by company"
                 [(ngModel)]="model.selectedCompany">
                 <span *ngFor="let data of companyList;let i=index;">
                     <nz-option [nzValue]="data.CompanyName" [nzLabel]="data.CompanyName"></nz-option>
