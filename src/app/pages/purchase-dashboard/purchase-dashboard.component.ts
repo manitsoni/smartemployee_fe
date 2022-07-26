@@ -258,8 +258,8 @@ export class PurchaseDashboardComponent implements OnInit {
       let d2 = Date.parse(this.model.selectedToDate.toDateString())
       if (d1 && d2) {
         this.purchaseList = this.purchaseListClone.filter((data) => {          
-          return ((!d1 || Date.parse(data.PurchaseDate) >= d1) &&
-                  (!d2 || Date.parse(data.PurchaseDate) <= d2));
+          return ((!d1 || Date.parse(data.PurchaseDateClone) >= d1) &&
+                  (!d2 || Date.parse(data.PurchaseDateClone) <= d2));
         })
         this.isDateFiltered = true;
         this.isAdvSearch = false;
