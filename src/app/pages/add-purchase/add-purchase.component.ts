@@ -66,7 +66,7 @@ export class AddPurchaseComponent implements OnInit {
     });
     if (this.purchaseForm.valid && this.selectedFiles.length > 0) {
       let formData = {
-        purchaseDate: this.purchaseForm.value.purchaseDate,
+        purchaseDate: new Date(this.purchaseForm.value.purchaseDate).toLocaleDateString(),
         vendorID: this.purchaseForm.value.vendorID,
         vendorName: "",
         toBillAmt: this.purchaseForm.value.toBillAmt,
