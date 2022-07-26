@@ -37,7 +37,8 @@ export class PurchaseDashboardComponent implements OnInit {
   fromDate: Date;
   toDate: Date;
   model: SearchModel = new SearchModel();
-
+  isDateFiltered = false;
+  total = 0;
   constructor(private service: CommonService, private nzImageService: NzImageService, public http: HttpClient) {
     this.isSuperAdmin = localStorage.getItem("isSuperUser") && localStorage.getItem("isSuperUser").length > 0 ? true : false;
     if (window.innerWidth < 560) {
@@ -60,23 +61,11 @@ export class PurchaseDashboardComponent implements OnInit {
     var url = "PurchaseMain/GetFiles/" + purchaseId
     this.imageUrl = [];
     this.service.API_POST(url, null).subscribe(res => {
-      console.log(res);
-      res.forEach(element => {
-        let part = element.uri.split("/");
-        if (part[4].toString() === purchaseId.toString()) {
-          let url = {
-            src: element.uri,
-            width: 'auto',
-            height: 'auto',
-            alt: 'ng-zorro'
-          }
-          this.imageUrl.push(url);
-        }
-      });
+      // this.imageUrl = res;
       this.service.isLoader = false;
-      this.nzImageService.preview(this.imageUrl, { nzZoom: 1.5, nzRotate: 0, nzNoAnimation: true });
+      this.nzImageService.preview(res, { nzZoom: 1.5, nzRotate: 0, nzNoAnimation: true });
+    });
 
-    })
     // const images = [
     //   {
     //     src: 'https://www.mculine.com/s3image/banner/Img_1658477001219.png',
@@ -98,9 +87,9 @@ export class PurchaseDashboardComponent implements OnInit {
       if (result.IsSuccess) {
         this.companyList = result.lstCompany;
         this.getVendorList();
-      }else{
+      } else {
         this.service.isLoader = false
-        this.service.showMessage("warning",result.Message)
+        this.service.showMessage("warning", result.Message)
       }
     })
   }
@@ -123,6 +112,7 @@ export class PurchaseDashboardComponent implements OnInit {
     })
   }
   getPurchaseList() {
+    this.isDateFiltered = false;
     this.service.API_GET("PurchaseMain/GetPurchaseMain").subscribe(response => {
       let result = response.result;
       if (result.IsSuccess) {
@@ -133,7 +123,7 @@ export class PurchaseDashboardComponent implements OnInit {
           this.purchaseList = result.lstPurchaseMain.filter(x => x.UserID === Number.parseInt(this.userId)).reverse();
         }
       }
-      this.purchaseListClone = [...this.purchaseList];
+      
       this.purchaseList.forEach((element: any) => {
         let companyObj = this.companyList.filter(x => x.CompanyID === element.CompanyID)[0]
         element['CompanyName'] = companyObj.CompanyName
@@ -143,7 +133,7 @@ export class PurchaseDashboardComponent implements OnInit {
         let userObj = this.userList.filter(x => x.UserID === element.UserID)[0]
         element['UserName'] = userObj.UserName
       });
-
+      this.purchaseListClone = [...this.purchaseList];
     })
   }
   searchByDate(event) {
@@ -158,12 +148,24 @@ export class PurchaseDashboardComponent implements OnInit {
   }
   searchPurchase() {
     if (this.searchValue.length > 2) {
-      this.purchaseList = this.purchaseListClone.filter(x => (x.UserName.toLowerCase().includes(this.searchValue.toLowerCase()) ||
-        (x.CompanyName.toLowerCase().includes(this.searchValue.toLowerCase())) ||
-        (x.VendorName.toLowerCase().includes(this.searchValue.toLowerCase())) ||
-        (x.Type.toLowerCase().includes(this.searchValue.toLowerCase()))));
+      if (this.isDateFiltered) {
+        this.purchaseList = this.purchaseList.filter(x => (x.UserName.toLowerCase().includes(this.searchValue.toLowerCase()) ||
+          (x.CompanyName.toLowerCase().includes(this.searchValue.toLowerCase())) ||
+          (x.VendorName.toLowerCase().includes(this.searchValue.toLowerCase())) ||
+          (x.Type.toLowerCase().includes(this.searchValue.toLowerCase()))));
+      } else {
+        this.purchaseList = this.purchaseListClone.filter(x => (x.UserName.toLowerCase().includes(this.searchValue.toLowerCase()) ||
+          (x.CompanyName.toLowerCase().includes(this.searchValue.toLowerCase())) ||
+          (x.VendorName.toLowerCase().includes(this.searchValue.toLowerCase())) ||
+          (x.Type.toLowerCase().includes(this.searchValue.toLowerCase()))));
+      }
     } else {
-      this.purchaseList = this.purchaseListClone;
+      if(this.isDateFiltered){
+        this.advanceSearch();
+      }else{
+        this.purchaseList = this.purchaseListClone;
+
+      }
     }
   }
   downloadFile(id) {
@@ -238,28 +240,34 @@ export class PurchaseDashboardComponent implements OnInit {
   }
   showSearch() {
     this.isAdvSearch = !this.isAdvSearch
-    if (!this.isAdvSearch) {
-      this.selectedUser = "";
-      this.selectedCompany = "";
-      this.selectedVendor = "";
-    }
+    // if (!this.isAdvSearch) {
+    //   this.model = new SearchModel();
+    //   this.fromDate = null;
+    //   this.toDate = null;
+    // }
   }
   advanceSearch() {
     if (this.purchaseList) {
-      if (!this.purchaseList || this.purchaseList.length === 0) {
-        this.purchaseList = this.purchaseListClone
-      };
-      if (!this.model || !this.model.selectedUser && !this.model.selectedVendor && !this.model.selectedCompany) { this.purchaseList = this.purchaseListClone };
-      let d1 = new Date(this.fromPurchaseDate[0]).toLocaleDateString("en-In")
-      let d2 = new Date(this.fromPurchaseDate[1]).toLocaleDateString("en-In")
-      this.purchaseList = this.purchaseListClone.filter((data) => {
-        return (!this.model.selectedUser || data.UserName.includes(this.model.selectedUser)) &&
-          (!this.model.selectedCompany || data.CompanyName.includes(this.model.selectedCompany)) &&
-          (!this.model.selectedVendor || data.VendorName.includes(this.model.selectedVendor)) &&
-          (!d1 || new Date(data.PurchaseDateClone) >= new Date(d1)) &&
-          (!d2 || new Date(data.PurchaseDateClone) <= new Date(d2));
-      })
+      // if (!this.purchaseList || this.purchaseList.length === 0) {
+      //   return this.purchaseList = this.purchaseListClone
+      // };
+      // if (!this.model || !this.model.selectedUser && !this.model.selectedVendor && !this.model.selectedCompany && !this.fromDate && !this.toDate) {
+      //   return this.purchaseList = this.purchaseListClone
+      // };
+      let d1 = Date.parse(this.model.selectedFromDate.toDateString())
+      let d2 = Date.parse(this.model.selectedToDate.toDateString())
+      if (d1 && d2) {
+        this.purchaseList = this.purchaseListClone.filter((data) => {          
+          return ((!d1 || Date.parse(data.PurchaseDate) >= d1) &&
+                  (!d2 || Date.parse(data.PurchaseDate) <= d2));
+        })
+        this.isDateFiltered = true;
+        this.isAdvSearch = false;
+      } else {
+        this.purchaseList = this.purchaseListClone;
+        this.service.showMessage("info", "Please, Select Date")
+      }
+
     }
-    this.showSearch();
   }
 }

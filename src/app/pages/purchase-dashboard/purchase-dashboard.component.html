@@ -10,18 +10,20 @@
     <nz-breadcrumb-item>Dashboard</nz-breadcrumb-item>
 </nz-breadcrumb>
 <br>
-<div style="display: flex;">
-    <button *ngIf="!isSuperAdmin" nz-button [nzType]="'primary'" routerLink="/add-purchase" class="gutter-row"><span>Add
-            purchase</span></button> &nbsp;&nbsp;&nbsp;
+<div style="display: flex;width:150px">
+    <button *ngIf="!isSuperAdmin" nz-button [nzType]="'primary'" routerLink="/add-purchase" class="gutter-row"><span>
+            <i nz-icon nzType="plus" nzTheme="outline"></i>Add</span></button>&nbsp;
     <button nz-button [nzType]="'primary'" (click)="refresh()" class="gutter-row"><span>
-            Refresh</span></button>&nbsp;&nbsp;&nbsp;
-    <br>
+            <i nz-icon nzType="redo" nzTheme="outline"></i>&nbsp;Refresh</span></button>&nbsp;
     <button nz-button [nzType]="'primary'" (click)="showSearch()" class="gutter-row"><span>
-            More Search</span></button>&nbsp;&nbsp;&nbsp;
-    <input nz-input placeholder="Search purchase" [(ngModel)]="searchValue" (keydown)="searchPurchase()"
-        autocomplete="off" style="margin-left: 15px;margin-bottom:15px;width:350px" />
+            <i nz-icon nzType="search" nzTheme="outline"></i></span></button>&nbsp;
 </div>
-
+<div style="display: flex;
+position: relative;
+left: -16px;">
+    <input nz-input placeholder="Search purchase(Username or vendor or company)" [(ngModel)]="searchValue"
+        (keydown)="searchPurchase()" autocomplete="off" style="margin-left: 15px;margin-bottom:15px;width:350px" />
+</div>
 <nz-table #basicTable [nzData]="purchaseList" [nzPageSize]="5" nzHideOnSinglePage="true" *ngIf="!isMobile">
     <thead>
         <tr>
@@ -56,12 +58,13 @@
 </nz-table>
 <div *ngIf="isMobile">
     <nz-empty *ngIf="purchaseList.length === 0"></nz-empty>
-    <div *ngFor="let data of purchaseList | paginate: { itemsPerPage: 3, currentPage: p };let i = index">
+    <div
+        *ngFor="let data of purchaseList | paginate: { itemsPerPage: 3, currentPage: p ,totalItems: total};let i = index">
         <nz-card [nzPageSize]="5" style="width:100%;" [nzTitle]="data.PurchaseDateClone"
             [nzActions]="[image, upload, download,delete,view]">
-            <p>Amount : {{data.ToBillAmt}}</p>
-            <p>Type : {{data.Type}}</p>
-            <p>Purchase By : {{data.UserName}}</p>
+            <p><b>Amount : </b> Rs.{{data.ToBillAmt}}</p>
+            <p><b>Type : </b> {{data.Type}}</p>
+            <p><b>Purchase By : </b> {{data.UserName}}</p>
         </nz-card>
         <br>
         <ng-template #image>
@@ -88,6 +91,7 @@
     </div>
 
 </div>
+Total Record : <p>{{purchaseList.length}}</p>
 <nz-modal [(nzVisible)]="isVisible" nzTitle="Upload More Files(Image)" (nzOnCancel)="openMore('')"
     (nzOnOk)="uploadFile()">
     <ng-container *nzModalContent>
@@ -112,32 +116,36 @@
 </nz-modal>
 <nz-modal [(nzVisible)]="isAdvSearch" nzTitle="Advance Search" (nzOnCancel)="showSearch()" (nzOnOk)="advanceSearch()">
     <ng-container>
-        <nz-form-item>
-            <nz-select style="width: 100%;" nzShowSearch nzAllowClear nzPlaceHolder="Search by company"
-                [(ngModel)]="model.selectedCompany">
+        <!-- <nz-form-item>
+            <nz-select style="width: 100%;" nzPlaceHolder="Search by company" [(ngModel)]="model.selectedCompany"
+                *ngIf="isSuperAdmin">
                 <span *ngFor="let data of companyList;let i=index;">
                     <nz-option [nzValue]="data.CompanyName" [nzLabel]="data.CompanyName"></nz-option>
                 </span>
             </nz-select>
         </nz-form-item>
         <nz-form-item>
-            <nz-select style="width: 100%;" nzShowSearch nzAllowClear nzPlaceHolder="Search by vendor"
-                [(ngModel)]="model.selectedVendor">
+            <nz-select style="width: 100%;" nzPlaceHolder="Search by vendor" [(ngModel)]="model.selectedVendor">
                 <span *ngFor="let data of vendorList;let i=index;">
                     <nz-option [nzValue]="data.VendorName" [nzLabel]="data.VendorName"></nz-option>
                 </span>
             </nz-select>
         </nz-form-item>
         <nz-form-item>
-            <nz-select style="width: 100%;" nzShowSearch nzAllowClear nzPlaceHolder="Search by user"
-                [(ngModel)]="model.selectedUser">
+            <nz-select style="width: 100%;" nzPlaceHolder="Search by user" [(ngModel)]="model.selectedUser"
+                *ngIf="isSuperAdmin">
                 <span *ngFor="let data of userList;let i=index;">
                     <nz-option [nzValue]="data.UserName" [nzLabel]="data.UserName"></nz-option>
                 </span>
             </nz-select>
+        </nz-form-item> -->
+        <nz-form-item>
+            <nz-date-picker style="width: 100%;" [(ngModel)]="model.selectedFromDate" nzInputReadOnly="true"
+                nzPlaceHolder="Purchase Date From"></nz-date-picker>
         </nz-form-item>
         <nz-form-item>
-            <nz-range-picker style="width: 100%;" [(ngModel)]="fromPurchaseDate"></nz-range-picker>
+            <nz-date-picker style="width: 100%;" [(ngModel)]="model.selectedToDate" nzInputReadOnly="true"
+                nzPlaceHolder="Purchase Date To"></nz-date-picker>
         </nz-form-item>
     </ng-container>
 

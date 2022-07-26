@@ -12,11 +12,13 @@ export class AppComponent {
   isCollapsed = false;
   isLogin =false;
   isSuperAdmin = false;
+  username : string;
   constructor(public service : CommonService,private route : Router,private router:ActivatedRoute,
     public platform: Platform){
       this.loadModalPwa();
     if(this.service.checkLogin()){
       this.isLogin = true;
+      this.username = localStorage.getItem("loggedUser")
     }else{
       this.isLogin = false;
     }
