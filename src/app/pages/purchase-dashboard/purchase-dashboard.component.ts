@@ -61,10 +61,22 @@ export class PurchaseDashboardComponent implements OnInit {
     var url = "PurchaseMain/GetFiles/" + purchaseId
     this.imageUrl = [];
     this.service.API_POST(url, null).subscribe(res => {
-      // this.imageUrl = res;
+      res.forEach(element => {
+        let part = element.uri.split("/");
+        if (part[4].toString() === purchaseId.toString()) {
+          let url = {
+            src: element.uri,
+            width: 'auto',
+            height: 'auto',
+            alt: 'ng-zorro'
+          }
+          this.imageUrl.push(url);
+        }
+      });
       this.service.isLoader = false;
-      this.nzImageService.preview(res, { nzZoom: 1.5, nzRotate: 0, nzNoAnimation: true });
-    });
+      this.nzImageService.preview(this.imageUrl, { nzZoom: 1.5, nzRotate: 0, nzNoAnimation: true });
+
+    })
 
     // const images = [
     //   {
@@ -258,8 +270,8 @@ export class PurchaseDashboardComponent implements OnInit {
       let d2 = Date.parse(this.model.selectedToDate.toDateString())
       if (d1 && d2) {
         this.purchaseList = this.purchaseListClone.filter((data) => {          
-          return ((!d1 || Date.parse(data.PurchaseDateClone) >= d1) &&
-                  (!d2 || Date.parse(data.PurchaseDateClone) <= d2));
+          return ((!d1 || Date.parse(data.PurchaseDate) >= d1) &&
+                  (!d2 || Date.parse(data.PurchaseDate) <= d2));
         })
         this.isDateFiltered = true;
         this.isAdvSearch = false;
