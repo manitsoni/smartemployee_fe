@@ -21,8 +21,13 @@
 <div style="display: flex;
 position: relative;
 left: -16px;">
-    <input nz-input placeholder="Search purchase(Username or vendor or company)" [(ngModel)]="searchValue"
-        (keydown)="searchPurchase()" autocomplete="off" style="margin-left: 15px;margin-bottom:15px;width:350px" />
+    <nz-input-group [nzSuffix]="suffixIconClear" style="bottom: 8px;width: 68%;left: 18px;">
+        <input nz-input placeholder="Search purchase(Username or vendor or company)" [(ngModel)]="searchValue"
+            (keyup)="searchPurchase()" autocomplete="off"/>
+    </nz-input-group>
+    <ng-template #suffixIconClear>
+        <i nz-icon nzType="close-circle" nzTheme="fill" (click)="clear()"></i>
+    </ng-template>
 </div>
 <nz-table #basicTable [nzData]="purchaseList" [nzPageSize]="5" nzHideOnSinglePage="true" *ngIf="!isMobile">
     <thead>
@@ -63,7 +68,7 @@ left: -16px;">
         <nz-card [nzPageSize]="5" style="width:100%;" [nzTitle]="data.PurchaseDateClone"
             [nzActions]="[image, upload, download,delete,view]">
             <p><b>Amount : </b> Rs.{{data.ToBillAmt}}</p>
-            <p><b>Type : </b> {{data.Type}}</p>
+            <p><b>Vendor : </b> {{data.VendorName}}</p>
             <p><b>Purchase By : </b> {{data.UserName}}</p>
         </nz-card>
         <br>

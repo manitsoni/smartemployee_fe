@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/services/comman.services';
 import * as FileSaver from 'file-saver'
 import { NzImageService } from 'ng-zorro-antd/image';
@@ -44,6 +44,7 @@ export class PurchaseDashboardComponent implements OnInit {
     if (window.innerWidth < 560) {
       this.isMobile = true
     }
+    // this.service.isCollapse = this.service.isCollapse === false?true:true;
   }
 
   ngOnInit(): void {
@@ -55,6 +56,16 @@ export class PurchaseDashboardComponent implements OnInit {
     this.service.isLoader = true;
     this.getCompanyList();
     this.userId = localStorage.getItem("userId");
+    this.searchValue ="";
+    this.model = new SearchModel();
+    this.isCustomSearch = false;
+    this.customSearchResult=[];
+    this.currentDate = []
+  }
+  clear(){
+    if(this.searchValue.length > 0){
+      this.refresh();
+    }
   }
   openView(purchaseId) {
     this.service.isLoader = true;
@@ -77,21 +88,6 @@ export class PurchaseDashboardComponent implements OnInit {
       this.nzImageService.preview(this.imageUrl, { nzZoom: 1.5, nzRotate: 0, nzNoAnimation: true });
 
     })
-
-    // const images = [
-    //   {
-    //     src: 'https://www.mculine.com/s3image/banner/Img_1658477001219.png',
-    //     width: 'auto',
-    //     height: 'auto',
-    //     alt: 'ng-zorro'
-    //   },
-    //   {
-    //     src: 'https://www.mculine.com/s3image/banner/Img_1658570632268.png',
-    //     width: 'auto',
-    //     height: 'auto',
-    //     alt: 'angular'
-    //   }
-    // ];
   }
   getCompanyList() {
     this.service.API_GET("Company/GetCompany").subscribe(response => {
@@ -158,26 +154,31 @@ export class PurchaseDashboardComponent implements OnInit {
       this.purchaseList = this.purchaseListClone;
     }
   }
+  isCustomSearch = false;
+  customSearchResult = [];
   searchPurchase() {
-    if (this.searchValue.length > 2) {
+    if (this.searchValue.trim() != "") {
       if (this.isDateFiltered) {
-        this.purchaseList = this.purchaseList.filter(x => (x.UserName.toLowerCase().includes(this.searchValue.toLowerCase()) ||
+        this.purchaseList = this.currentDate.filter(x => (x.UserName.toLowerCase().includes(this.searchValue.toLowerCase()) ||
           (x.CompanyName.toLowerCase().includes(this.searchValue.toLowerCase())) ||
           (x.VendorName.toLowerCase().includes(this.searchValue.toLowerCase())) ||
           (x.Type.toLowerCase().includes(this.searchValue.toLowerCase()))));
       } else {
-        this.purchaseList = this.purchaseListClone.filter(x => (x.UserName.toLowerCase().includes(this.searchValue.toLowerCase()) ||
+        this.purchaseList = this.purchaseList.filter(x => (x.UserName.toLowerCase().includes(this.searchValue.toLowerCase()) ||
           (x.CompanyName.toLowerCase().includes(this.searchValue.toLowerCase())) ||
           (x.VendorName.toLowerCase().includes(this.searchValue.toLowerCase())) ||
           (x.Type.toLowerCase().includes(this.searchValue.toLowerCase()))));
+        this.customSearchResult =[];
+        this.customSearchResult = this.purchaseList;
+          this.isCustomSearch = true;
       }
     } else {
-      if(this.isDateFiltered){
-        this.advanceSearch();
-      }else{
+      if (this.isDateFiltered) {
+        this.purchaseList = this.currentDate;
+      } else {
         this.purchaseList = this.purchaseListClone;
-
       }
+      this.isCustomSearch = false;
     }
   }
   downloadFile(id) {
@@ -258,6 +259,7 @@ export class PurchaseDashboardComponent implements OnInit {
     //   this.toDate = null;
     // }
   }
+  currentDate:any;
   advanceSearch() {
     if (this.purchaseList) {
       // if (!this.purchaseList || this.purchaseList.length === 0) {
@@ -269,13 +271,24 @@ export class PurchaseDashboardComponent implements OnInit {
       let d1 = Date.parse(this.model.selectedFromDate.toDateString())
       let d2 = Date.parse(this.model.selectedToDate.toDateString())
       if (d1 && d2) {
-        this.purchaseList = this.purchaseListClone.filter((data) => {          
-          return ((!d1 || Date.parse(data.PurchaseDate) >= d1) &&
-                  (!d2 || Date.parse(data.PurchaseDate) <= d2));
-        })
+        if(this.isCustomSearch){
+          this.purchaseList = this.customSearchResult.filter((data) => {
+            return ((!d1 || Date.parse(data.PurchaseDate) >= d1) &&
+              (!d2 || Date.parse(data.PurchaseDate) <= d2));
+          })
+        }else{
+          this.purchaseList = this.purchaseListClone.filter((data) => {
+            return ((!d1 || Date.parse(data.PurchaseDate) >= d1) &&
+              (!d2 || Date.parse(data.PurchaseDate) <= d2));
+          });
+          this.currentDate = []
+          this.currentDate = [...this.purchaseList];
+        }
+          
         this.isDateFiltered = true;
         this.isAdvSearch = false;
       } else {
+        this.isAdvSearch = false;
         this.purchaseList = this.purchaseListClone;
         this.service.showMessage("info", "Please, Select Date")
       }
